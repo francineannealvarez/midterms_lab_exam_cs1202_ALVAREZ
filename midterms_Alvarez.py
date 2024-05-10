@@ -62,11 +62,12 @@ def display_inventory(username):
 
 #Function for admin to update game details
 def admin_update_game(username):
-    pass
+    while True:
+        print("\nAdmin Update Game Details Page")
 
 #Function for admin log in
 def admin_login():
-    print("Admin Login Page")
+    print("\nAdmin Login Page")
     admin_usn = input("Enter username: ")
     admin_pass = input("Enter password: ")
     if admin_usn == admin_username and admin_pass == admin_password:
@@ -78,7 +79,7 @@ def admin_login():
 #Function for admin menu
 def admin_menu():
     while True:
-        print("Admin Menu")
+        print("\nAdmin Menu")
         print("1. Update game details")
         print("2. Logged out")
         admin_choice = input("Enter the number corresponding to your choice: ")
