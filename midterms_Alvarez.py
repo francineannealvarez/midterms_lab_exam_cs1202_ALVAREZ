@@ -58,6 +58,7 @@ def log_in_user():
 def logged_in_menu(username):
     while True:
         print("\nUsers Menu Page")
+        print(f"Logged in as {username}.")
         print("1. Rent a Game")
         print("2. Return a Game")
         print("3. Top-up Account")
@@ -65,26 +66,35 @@ def logged_in_menu(username):
         print("5. Redeem a Free Game Rental")
         print("6. Logged out")
         user_choice = input("Enter the number corresponding to your choice: ")
-
-        if user_choice == "1":
-            rent_game(username)
-        elif user_choice == "2":
-            return_game(username)
-        elif user_choice == "3":
-            top_up_account(username)
-        elif user_choice == "4":
-            display_inventory()
-        elif user_choice == "5":
-            redeem_free_rental(username)
-        elif user_choice == "6":
-            print(f"Logged out as {username} successfully.")
-            main()
+        try:
+            if user_choice == "1":
+                rent_game(username)
+            elif user_choice == "2":
+                return_game(username)
+            elif user_choice == "3":
+                top_up_account(username)
+            elif user_choice == "4":
+                display_inventory()
+            elif user_choice == "5":
+                redeem_free_game_rental(username)
+            elif user_choice == "6":
+                print(f"Logged out as {username} successfully.")
+                main()
+            else:
+                print("Invalid choice.")
+        except Exception as e:
+            print(f"Error occured: {e}.")
 
 #Function to rent a game 
 def rent_game(username, free=False):
     display_available_games()
     try:
-        game_choice = int(input("Enter the number corresponding to the game you want to rent: "))
+        game_choice = input("Enter the number corresponding to the game you want to rent: ")
+        if not game_choice.strip():  # Check if input is blank
+            print("Canceled.")
+            logged_in_menu(username)
+            return
+        game_choice = int(game_choice)
         if game_choice in game_library:
             game_name = list(game_library[game_choice].keys())[0]
             game_info = game_library[game_choice][game_name]
@@ -118,18 +128,23 @@ def rent_game(username, free=False):
                         
 #Function to return a game
 def return_game(username):
-    inventory = user_accounts[username].get('inventory', [])
+    inventory = user_accounts[username].get("inventory", [])
     print("\nRented Games:")
     for index, game_name in enumerate(inventory, 1):
         print(f"{index}. {game_name}")
     
     try:
         game_choice = input("Enter the number corresponding to the game you want to return: ")
+        if not game_choice.strip():  # Check if input is blank
+            print("Canceled.")
+            logged_in_menu(username)
+            return
+        game_choice = int(game_choice)
         if 1 <= game_choice <= len(inventory):
             game_name = inventory[game_choice - 1]
             for game_info in game_library.items():
                 if game_name in game_info:
-                    game_info[game_name]['quantity'] += 1
+                    game_info[game_name]["quantity"] += 1
                     break
             
             inventory.remove(game_name)
@@ -145,6 +160,11 @@ def top_up_account(username):
     try:
         print("\n")
         amount = input("Enter the desired top-up amount: ")
+        if not amount.strip():  # Check if input is blank
+            print("Canceled.")
+            logged_in_menu(username)
+            return
+        amount = float(amount)
         if amount > 0:
             user_accounts[username]["balance"] += amount
             balance = user_accounts[username]["balance"]
@@ -170,66 +190,15 @@ def display_inventory(username):
     logged_in_menu(username)
 
 #Function for users to redeem points for a free game rental
-def redeem_free_rental(username):
+def redeem_free_game_rental(username):
     rental_points = user_accounts[username]["points"]
     if rental_points >= 3:
         user_accounts[username]["points"] -= 3
-        rent_game(username)
+        print("\nRedeemed points. You now have 1 free game rental! 3 points deducted.")
+        rent_game(username, free=True) 
+        logged_in_menu(username)
     else:
         print("\nYou do not have enough points. Need at least 3 points to redeem.")
-
-#Function for admin to update game details
-def admin_update_game(username):
-    while True:
-        print("\nAdmin Update Game Details Page")
-        print("1. Update Quantity of Games")
-        print("2. Update Rental Cost of Games")
-        print("3. Back to admin menu")
-        admin_choice = input("Enter the number corresponding to your choice: ")
-        
-        if admin_choice == "1":
-            update_games_quantity()
-        elif admin_choice == "2":
-            update_games_rental_cost()
-        elif admin_choice == "3":
-            admin_menu()
-        else:
-            print("..")
-
-#Function for updating quantity of games
-def update_games_quantity():
-    print("\n")
-    display_available_games()
-    try:
-        game_choice = input("Enter the number corresponding to the game you want to update: ")
-        if game_choice in game_library:
-            game_name = list(game_library[game_choice].keys())[0]
-            quantity = int(input(f"Input the updated quantity for {game_name}: "))
-            game_library[game_choice][game_name]["quantity"] = quantity
-            print(f"Quantity updated for {game_name}: {quantity}")
-            admin_update_game()
-        else:
-            print("Invalid choice.")
-    except ValueError as e:
-        print(f"Error occured: {e}")
-
-#Function for updating rental costs of games
-def update_games_rental_cost():
-    print("\n")
-    display_available_games()
-    try:
-        game_choice = input("Enter the number corresponding to the game you want to update: ")
-        game_choice = int(game_choice)
-        if game_choice in game_library:
-            game_name = list(game_library[game_choice].keys())[0]
-            rental_cost = float(input(f"Input the updated rental cost for {game_name}: "))
-            game_library[game_choice][game_name]["rental cost"] = rental_cost
-            print(f"Rental cost updated for {game_name}: {rental_cost}")
-            admin_update_game()
-        else:
-           print("Invalid choice.")
-    except ValueError as e:
-        print(f"Error occured: {e}")
 
 #Function for admin log in
 def admin_login():
@@ -249,34 +218,108 @@ def admin_menu():
         print("1. Update game details")
         print("2. Logged out")
         admin_choice = input("Enter the number corresponding to your choice: ")
-        
-        if admin_choice == "1":
+        try: 
+            if admin_choice == "1":
+                admin_update_game()
+            elif admin_choice == "2":
+                print("Logged out successfully.")
+                main()
+            else:
+                print("Invalid choice.")
+        except Exception as e:
+            print(f"Error occured: {e}.")
+
+#Function for admin to update game details
+def admin_update_game(username):
+    while True:
+        print("\nAdmin Update Game Details Page")
+        print("1. Update Quantity of Games")
+        print("2. Update Rental Cost of Games")
+        print("3. Back to admin menu")
+        admin_choice = input("Enter the number corresponding to your choice: ")
+        try:
+            if admin_choice == "1":
+                update_games_quantity()
+            elif admin_choice == "2":
+                update_games_rental_cost()
+            elif admin_choice == "3":
+                admin_menu()
+            else:
+                print("Your choice isn't included in the provided selection.")
+        except Exception as e:
+            print(f"Error occured: {e}.")
+
+#Function for updating quantity of games
+def update_games_quantity():
+    print("\n")
+    display_available_games()
+    try:
+        game_choice = input("Enter the number corresponding to the game you want to update: ")
+        if not game_choice.strip():  # Check if input is blank
+            print("Canceled.")
             admin_update_game()
-        elif admin_choice == "2":
-            print("Logged out successfully.")
+            return
+        game_choice = int(game_choice)
+        if game_choice in game_library:
+            game_name = list(game_library[game_choice].keys())[0]
+            quantity = int(input(f"Input the updated quantity for {game_name}: "))
+            game_library[game_choice][game_name]["quantity"] = quantity
+            print(f"Quantity updated for {game_name}: {quantity}")
+            admin_update_game()
         else:
             print("Invalid choice.")
+    except ValueError as e:
+        print(f"Error occured: {e}")
 
-#Function for users to redeem points for a free game rental
-def redeem_free_rental(username):
-    rental_points = user_accounts[username]["points"]
-    if rental_points >= 3:
-        user_accounts[username]["points"] -= 3
-        rent_game(username)
-    else:
-        print("\nYou do not have enough points. Need at least 3 points to redeem.")
-
-#Function to display game inventory
-def display_game_inventory():
-    pass
-
-#Function to check user credentials
-def check_credentials(username, password):
-    pass
+#Function for updating rental costs of games
+def update_games_rental_cost():
+    print("\n")
+    display_available_games()
+    try:
+        game_choice = input("Enter the number corresponding to the game you want to update: ")
+        if not game_choice.strip():  # Check if input is blank
+            print("Canceled.")
+            admin_update_game()
+            return
+        game_choice = int(game_choice)
+        if game_choice in game_library:
+            game_name = list(game_library[game_choice].keys())[0]
+            rental_cost = float(input(f"Input the updated rental cost for {game_name}: "))
+            game_library[game_choice][game_name]["rental cost"] = rental_cost
+            print(f"Rental cost updated for {game_name}: {rental_cost}")
+            admin_update_game()
+        else:
+           print("Invalid choice.")
+    except ValueError as e:
+        print(f"Error occured: {e}")
 
 #Main function to run the program
 def main():
-    pass
+    while True: 
+        print("\nWelcome to Video Game Rental System!")
+        print("1. Display Available Games")
+        print("2. Register User")
+        print("3. Log in")
+        print("4. Admin log in")
+        print("5. Exit")
+        
+        choice = input("Enter the number corresponding to your choice: ")
+        try:
+            if choice == "1":
+                display_available_games()
+            elif choice == "2":
+                register_user()
+            elif choice == "3":
+                log_in_user()
+            elif choice == "4":
+                admin_login()
+            elif choice == "5":
+                print("Thank you for using this system!")
+            else:
+                print("Your choice isn't included in the provided selection.")
+                break
+        except Exception as e:
+            print(f"Error occured: {e}.")
 
 if __name__ == "__main__":
     main()
