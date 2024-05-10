@@ -125,6 +125,17 @@ def display_game_inventory():
 def logged_in_menu(username):
     pass
 
+#Function for logging in
+def log_in_user():
+    print("\nLog in Page")
+    username = input("Enter username: ")
+    password = input("Enter password: ")
+    if username in user_accounts and user_accounts[username]["password"]:
+        print(f"Logged in successfully. Welcome {username}!")
+        logged_in_menu(username)
+    else:
+        print("Invalid username or password.")
+        
 #Function to check user credentials
 def check_credentials(username, password):
     pass
