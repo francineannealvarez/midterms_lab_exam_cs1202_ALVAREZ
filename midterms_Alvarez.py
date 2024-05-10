@@ -1,2 +1,4 @@
 #dictionary
-game_library
+game_library = {
+    1: {}
+}
