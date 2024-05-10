@@ -22,7 +22,6 @@ def display_available_games():
         rental_cost = games[game_name]["rental cost"]
         print(f"{index}. {game_name} - Quantity: {quantity}, Rental Cost: {rental_cost}")
         
-
 #Function to register a new user
 def register_user():
     print("\nRegister Page ")
@@ -80,7 +79,6 @@ def logged_in_menu(username):
         elif user_choice == "6":
             print(f"Logged out as {username} successfully.")
             main()
-
 
 #Function to rent a game 
 def rent_game(username, free=False):
@@ -144,11 +142,41 @@ def return_game(username):
 
 #Function to top_up user account
 def top_up_account(username):
-    pass
+    try:
+        print("\n")
+        amount = input("Enter the desired top-up amount: ")
+        if amount > 0:
+            user_accounts[username]["balance"] += amount
+            balance = user_accounts[username]["balance"]
+            print(f"Successfully topped up. Your new balance is ${balance}.")
+            logged_in_menu(username)
+        else:
+            print("Amount must be greater than 0.")
+    except ValueError as e:
+        print(f"Error occured: {e}.")
 
 #Function to display user's inventory
 def display_inventory(username):
-    pass
+    inventory = user_accounts[username].get("inventory", [])
+    print("\nYOUR INVENTORY")
+    if inventory:
+        for index, game_name in enumerate(inventory, 1):
+            print(f"{index}. {game_name}")
+    else:
+        print("There are currently no games rented under your account.")
+
+    balance = user_accounts[username]["balance"]
+    print(f"Account Balance: ${balance}")
+    logged_in_menu(username)
+
+#Function for users to redeem points for a free game rental
+def redeem_free_rental(username):
+    rental_points = user_accounts[username]["points"]
+    if rental_points >= 3:
+        user_accounts[username]["points"] -= 3
+        rent_game(username)
+    else:
+        print("\nYou do not have enough points. Need at least 3 points to redeem.")
 
 #Function for admin to update game details
 def admin_update_game(username):
@@ -170,11 +198,38 @@ def admin_update_game(username):
 
 #Function for updating quantity of games
 def update_games_quantity():
-    pass
+    print("\n")
+    display_available_games()
+    try:
+        game_choice = input("Enter the number corresponding to the game you want to update: ")
+        if game_choice in game_library:
+            game_name = list(game_library[game_choice].keys())[0]
+            quantity = int(input(f"Input the updated quantity for {game_name}: "))
+            game_library[game_choice][game_name]["quantity"] = quantity
+            print(f"Quantity updated for {game_name}: {quantity}")
+            admin_update_game()
+        else:
+            print("Invalid choice.")
+    except ValueError as e:
+        print(f"Error occured: {e}")
 
 #Function for updating rental costs of games
 def update_games_rental_cost():
-    pass
+    print("\n")
+    display_available_games()
+    try:
+        game_choice = input("Enter the number corresponding to the game you want to update: ")
+        game_choice = int(game_choice)
+        if game_choice in game_library:
+            game_name = list(game_library[game_choice].keys())[0]
+            rental_cost = float(input(f"Input the updated rental cost for {game_name}: "))
+            game_library[game_choice][game_name]["rental cost"] = rental_cost
+            print(f"Rental cost updated for {game_name}: {rental_cost}")
+            admin_update_game()
+        else:
+           print("Invalid choice.")
+    except ValueError as e:
+        print(f"Error occured: {e}")
 
 #Function for admin log in
 def admin_login():
@@ -202,7 +257,6 @@ def admin_menu():
         else:
             print("Invalid choice.")
 
-
 #Function for users to redeem points for a free game rental
 def redeem_free_rental(username):
     rental_points = user_accounts[username]["points"]
@@ -212,11 +266,9 @@ def redeem_free_rental(username):
     else:
         print("\nYou do not have enough points. Need at least 3 points to redeem.")
 
-
 #Function to display game inventory
 def display_game_inventory():
     pass
-
 
 #Function to check user credentials
 def check_credentials(username, password):
