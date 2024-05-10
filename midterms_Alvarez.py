@@ -153,14 +153,16 @@ def admin_menu():
 
 #Function for users to redeem points for a free game rental
 def redeem_free_rental(username):
-    pass
+    rental_points = user_accounts[username]["points"]
+    if rental_points >= 3:
+        user_accounts[username]["points"] -= 3
+        rent_game(username)
+    else:
+        print("\nYou do not have enough points. Need at least 3 points to redeem.")
+
 
 #Function to display game inventory
 def display_game_inventory():
-    pass
-
-#Function to handle user's logged in menu
-def logged_in_menu(username):
     pass
 
 
