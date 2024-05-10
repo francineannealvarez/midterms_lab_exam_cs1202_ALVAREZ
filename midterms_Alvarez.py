@@ -84,7 +84,14 @@ def logged_in_menu(username):
 
 #Function to rent a game 
 def rent_game(username):
-    pass
+    display_available_games()
+    try:
+        game_choice = int(input("Enter the number corresponding to the game you want to rent: "))
+        if game_choice in game_library:
+            game_name = list(game_library[game_choice].keys())[0]
+            balance = user_accounts[username]["balance"]
+            if game_library[game_choice][game_name]["quantity"] > 0:
+                rental_cost = 0 if free else game
 
 #Function to return a game
 def return_game(username):
