@@ -15,11 +15,36 @@ admin_password = "adminpass"
 
 #Function to display available games with their numbers and rental costs
 def display_available_games():
-    pass
+    print("\nAVAILABLE GAMES:")
+    for index, games in game_library.items():
+        game_name = list(games.keys())[0]
+        quantity = games[game_name]['quantity']
+        rental_cost = games[game_name]['rental cost']
+        print(f"{index}. {game_name} - Quantity: {quantity}, Rental Cost: {rental_cost}")
+        
 
 #Function to register a new user
 def register_user():
-    pass
+    print("\nRegister Page ")
+    username = input("Enter username: ")
+    if username in user_accounts:
+        print(f"{username} already exists. Please enter another username.")
+    else:
+        password = input("Enter password (password must be 8 characters long): ")
+        if len(password) < 8:
+            print("Password must be 8 characters long.")
+        else:
+            print("Registered successfully.")
+            user_accounts[username] = {
+                "username": username,
+                "password": password,
+                "balance": 0.0,
+                "points": 0,
+                "inventory": []
+            }
+            main()
+            
+
 #Function to rent a game 
 def rent_game(username):
     pass
