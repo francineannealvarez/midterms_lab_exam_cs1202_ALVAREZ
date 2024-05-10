@@ -120,7 +120,27 @@ def rent_game(username, free=False):
                         
 #Function to return a game
 def return_game(username):
-    pass
+    inventory = user_accounts[username].get('inventory', [])
+    print("\nRented Games:")
+    for index, game_name in enumerate(inventory, 1):
+        print(f"{index}. {game_name}")
+    
+    try:
+        game_choice = input("Enter the number corresponding to the game you want to return: ")
+        if 1 <= game_choice <= len(inventory):
+            game_name = inventory[game_choice - 1]
+            for game_info in game_library.items():
+                if game_name in game_info:
+                    game_info[game_name]['quantity'] += 1
+                    break
+            
+            inventory.remove(game_name)
+            print(f"{game_name} has been returned successfully.")
+            logged_in_menu(username)
+        else:
+            print("Your choice isn't included in your inventory.")
+    except Exception as e:
+        print(f"Error occured: {e}.")
 
 #Function to top_up user account
 def top_up_account(username):
