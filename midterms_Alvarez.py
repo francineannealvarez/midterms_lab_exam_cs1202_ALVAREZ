@@ -43,7 +43,6 @@ def register_user():
                 "inventory": []
             }
             main()
-            
 
 #Function to rent a game 
 def rent_game(username):
@@ -67,11 +66,30 @@ def admin_update_game(username):
 
 #Function for admin log in
 def admin_login():
-    pass
+    print("Admin Login Page")
+    admin_usn = input("Enter username: ")
+    admin_pass = input("Enter password: ")
+    if admin_usn == admin_username and admin_pass == admin_password:
+        print("Logged in successfully.")
+        admin_menu()
+    else:
+        print("Invalid username or password.")
 
 #Function for admin menu
 def admin_menu():
-    pass
+    while True:
+        print("Admin Menu")
+        print("1. Update game details")
+        print("2. Logged out")
+        admin_choice = input("Enter the number corresponding to your choice: ")
+        
+        if admin_choice == "1":
+            admin_update_game()
+        elif admin_choice == "2":
+            print("Logged out successfully.")
+        else:
+            print("Invalid choice.")
+
 
 #Function for users to redeem points for a free game rental
 def redeem_free_rental(username):
