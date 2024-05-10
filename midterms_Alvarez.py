@@ -64,6 +64,27 @@ def display_inventory(username):
 def admin_update_game(username):
     while True:
         print("\nAdmin Update Game Details Page")
+        print("1. Update Quantity of Games")
+        print("2. Update Rental Cost of Games")
+        print("3. Back to admin menu")
+        admin_choice = input("Enter the number corresponding to your choice: ")
+        
+        if admin_choice == "1":
+            update_games_quantity()
+        elif admin_choice == "2":
+            update_games_rental_cost()
+        elif admin_choice == "3":
+            admin_menu()
+        else:
+            print("..")
+
+#Function for updating quantity of games
+def update_games_quantity():
+    pass
+
+#Function for updating rental costs of games
+def update_games_rental_cost()
+    pass
 
 #Function for admin log in
 def admin_login():
