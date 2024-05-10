@@ -43,6 +43,44 @@ def register_user():
                 "inventory": []
             }
             main()
+            
+#Function for logging in
+def log_in_user():
+    print("\nLog in Page")
+    username = input("Enter username: ")
+    password = input("Enter password: ")
+    if username in user_accounts and user_accounts[username]["password"]:
+        print(f"Logged in successfully. Welcome {username}!")
+        logged_in_menu(username)
+    else:
+        print("Invalid username or password.")
+
+#Function to handle user's logged in menu
+def logged_in_menu(username):
+    while True:
+        print("\nUsers Menu Page")
+        print("1. Rent a Game")
+        print("2. Return a Game")
+        print("3. Top-up Account")
+        print("4. Display Inventory")
+        print("5. Redeem a Free Game Rental")
+        print("6. Logged out")
+        user_choice = input("Enter the number corresponding to your choice: ")
+
+        if user_choice == "1":
+            rent_game(username)
+        elif user_choice == "2":
+            return_game(username)
+        elif user_choice == "3":
+            top_up_account(username)
+        elif user_choice == "4":
+            display_inventory()
+        elif user_choice == "5":
+            redeem_free_rental(username)
+        elif user_choice == "6":
+            print(f"Logged out as {username} successfully.")
+            main()
+
 
 #Function to rent a game 
 def rent_game(username):
@@ -83,7 +121,7 @@ def update_games_quantity():
     pass
 
 #Function for updating rental costs of games
-def update_games_rental_cost()
+def update_games_rental_cost():
     pass
 
 #Function for admin log in
@@ -125,17 +163,7 @@ def display_game_inventory():
 def logged_in_menu(username):
     pass
 
-#Function for logging in
-def log_in_user():
-    print("\nLog in Page")
-    username = input("Enter username: ")
-    password = input("Enter password: ")
-    if username in user_accounts and user_accounts[username]["password"]:
-        print(f"Logged in successfully. Welcome {username}!")
-        logged_in_menu(username)
-    else:
-        print("Invalid username or password.")
-        
+
 #Function to check user credentials
 def check_credentials(username, password):
     pass
