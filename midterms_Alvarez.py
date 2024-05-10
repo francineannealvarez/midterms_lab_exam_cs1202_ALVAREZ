@@ -18,8 +18,8 @@ def display_available_games():
     print("\nAVAILABLE GAMES:")
     for index, games in game_library.items():
         game_name = list(games.keys())[0]
-        quantity = games[game_name]['quantity']
-        rental_cost = games[game_name]['rental cost']
+        quantity = games[game_name]["quantity"]
+        rental_cost = games[game_name]["rental cost"]
         print(f"{index}. {game_name} - Quantity: {quantity}, Rental Cost: {rental_cost}")
         
 
@@ -83,16 +83,41 @@ def logged_in_menu(username):
 
 
 #Function to rent a game 
-def rent_game(username):
+def rent_game(username, free=False):
     display_available_games()
     try:
         game_choice = int(input("Enter the number corresponding to the game you want to rent: "))
         if game_choice in game_library:
             game_name = list(game_library[game_choice].keys())[0]
+            game_info = game_library[game_choice][game_name]
             balance = user_accounts[username]["balance"]
-            if game_library[game_choice][game_name]["quantity"] > 0:
-                rental_cost = 0 if free else game
+            if game_info["quantity"] > 0:
+                rental_cost = 0 if free else game_info["rental_cost"]
+                if balance >= rental_cost:
+                    game_info["quantity"] -= 1
+                    user_accounts[username]["balance"] -= rental_cost
+                    balance = user_accounts[username]["balance"]
+                    print(f"{game_name} rented successfully.")
+                    user_accounts[username]["inventory"].append(game_name)
+                    print(f"Your current balance is ${balance}.")
 
+                    if not free:
+                        if int(rental_cost) >= 2:
+                            user_accounts[username]["points"] += 1
+                            print("You have earned 1 point.")
+                            logged_in_menu(username)
+                        else:
+                            print("No added points. Need to spend at least $2 to gain 1 point.")
+                            logged_in_menu(username)
+                else:
+                    print(f"You do not have enough balance tp rent {game_name}.")
+            else: 
+                print("Sorry, no copies available.")
+        else:
+            print("Your choice isn't included in the provided selection.")
+    except ValueError as e: 
+        print(f"Error occured: {e}.")
+                        
 #Function to return a game
 def return_game(username):
     pass
