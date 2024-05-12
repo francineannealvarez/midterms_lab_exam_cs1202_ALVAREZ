@@ -37,9 +37,9 @@ def register_user():
             user_accounts[username] = {
                 "username": username,
                 "password": password,
-                "balance": 0.0,
-                "points": 0,
-                "inventory": []
+                "balance": 0.0, #float
+                "points": 0, #int
+                "inventory": [] 
             }
             main()
             
@@ -48,7 +48,7 @@ def log_in_user():
     print("\nLog in Page")
     username = input("Enter username: ")
     password = input("Enter password: ")
-    if username in user_accounts and user_accounts[username]["password"]:
+    if username in user_accounts and user_accounts[username]["password"] == password:
         print(f"Logged in successfully. Welcome {username}!")
         logged_in_menu(username)
     else:
@@ -74,7 +74,7 @@ def logged_in_menu(username):
             elif user_choice == "3":
                 top_up_account(username)
             elif user_choice == "4":
-                display_inventory()
+                display_inventory(username)
             elif user_choice == "5":
                 redeem_free_game_rental(username)
             elif user_choice == "6":
@@ -97,12 +97,12 @@ def rent_game(username, free=False):
         game_choice = int(game_choice)
         if game_choice in game_library:
             game_name = list(game_library[game_choice].keys())[0]
-            game_info = game_library[game_choice][game_name]
+            game_quantity_cost = game_library[game_choice][game_name]
             balance = user_accounts[username]["balance"]
-            if game_info["quantity"] > 0:
-                rental_cost = 0 if free else game_info["rental_cost"]
+            if game_quantity_cost["quantity"] > 0:
+                rental_cost = 0 if free else game_quantity_cost["rental cost"]
                 if balance >= rental_cost:
-                    game_info["quantity"] -= 1
+                    game_quantity_cost["quantity"] -= 1
                     user_accounts[username]["balance"] -= rental_cost
                     balance = user_accounts[username]["balance"]
                     print(f"{game_name} rented successfully.")
@@ -123,7 +123,9 @@ def rent_game(username, free=False):
                 print("Sorry, no copies available.")
         else:
             print("Your choice isn't included in the provided selection.")
-    except ValueError as e: 
+    except ValueError:
+        print("Error occured. Note that only numbers will be accepted.")
+    except Exception as e:
         print(f"Error occured: {e}.")
                         
 #Function to return a game
@@ -152,6 +154,8 @@ def return_game(username):
             logged_in_menu(username)
         else:
             print("Your choice isn't included in your inventory.")
+    except ValueError:
+        print("Error occured. Note that only numbers will be accepted.")
     except Exception as e:
         print(f"Error occured: {e}.")
 
@@ -172,12 +176,12 @@ def top_up_account(username):
             logged_in_menu(username)
         else:
             print("Amount must be greater than 0.")
-    except ValueError as e:
-        print(f"Error occured: {e}.")
+    except ValueError:
+        print("Error occured. Note that only numbers will be accepted.")
 
-#Function to display user's inventory
+#function to display user's inventory
 def display_inventory(username):
-    inventory = user_accounts[username].get("inventory", [])
+    inventory = user_accounts[username].get('inventory', [])
     print("\nYOUR INVENTORY")
     if inventory:
         for index, game_name in enumerate(inventory, 1):
@@ -185,7 +189,7 @@ def display_inventory(username):
     else:
         print("There are currently no games rented under your account.")
 
-    balance = user_accounts[username]["balance"]
+    balance = user_accounts[username]['balance']
     print(f"Account Balance: ${balance}")
     logged_in_menu(username)
 
