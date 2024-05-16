@@ -234,7 +234,7 @@ def admin_menu():
             print(f"Error occured: {e}.")
 
 #Function for admin to update game details
-def admin_update_game(username):
+def admin_update_game():
     while True:
         print("\nAdmin Update Game Details Page")
         print("1. Update Quantity of Games")
@@ -319,9 +319,9 @@ def main():
                 admin_login()
             elif choice == "5":
                 print("Thank you for using this system!")
+                break
             else:
                 print("Your choice isn't included in the provided selection.")
-                break
         except Exception as e:
             print(f"Error occured: {e}.")
 
